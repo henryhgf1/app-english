@@ -1,4 +1,5 @@
 import { Check, Trash2 } from 'lucide-react'
+import SpeakButton from '../../components/SpeakButton'
 import type { CardInput, Deck } from '../../lib/types'
 
 interface BatchPanelProps {
@@ -61,7 +62,10 @@ export default function BatchPanel({
                 {input.tags?.map((tag) => <span className="tag" key={tag}>{tag}</span>)}
               </div>
               <div className="grid grid-2">
-                <input className="input" value={input.front} aria-label={`Front ${index + 1}`} onChange={(event) => patch(index, { front: event.target.value })} />
+                <div className="row" style={{ flexWrap: 'nowrap' }}>
+                  <input className="input" value={input.front} aria-label={`Front ${index + 1}`} onChange={(event) => patch(index, { front: event.target.value })} />
+                  <SpeakButton text={input.front} />
+                </div>
                 <input className="input" value={input.back} aria-label={`Back ${index + 1}`} onChange={(event) => patch(index, { back: event.target.value })} />
               </div>
               <input

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import TagInput from '../../components/TagInput'
+import SpeakButton from '../../components/SpeakButton'
 import { useDecks } from '../../hooks/useData'
 import { addCards, db, makeCard } from '../../lib/db'
 import { useSettings } from '../../app/settings-context'
@@ -192,7 +193,10 @@ export default function AddCardsPage() {
 
           <div className="grid grid-2">
             <div className="field">
-              <label className="label" htmlFor="front">Front</label>
+              <div className="spread">
+                <label className="label" htmlFor="front">Front</label>
+                <SpeakButton text={form.front} />
+              </div>
               <input
                 id="front"
                 className="input"
