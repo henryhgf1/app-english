@@ -64,6 +64,7 @@ export interface CardInput {
   example?: string
   phenomenon?: string
   tags?: string[]
+  source?: 'manual' | 'import'
 }
 
 export interface BackupData {

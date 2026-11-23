@@ -41,7 +41,7 @@ export function makeCard(input: CardInput, deckId: number): Card {
     example: (input.example ?? '').trim(),
     phenomenon: (input.phenomenon ?? '').trim(),
     tags: (input.tags ?? []).map((tag) => tag.trim()).filter(Boolean),
-    source: 'manual',
+    source: input.source ?? 'manual',
     createdAt: now,
     updatedAt: now,
     srs: { ease: 2.5, interval: 0, repetitions: 0, dueAt: now },

@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import TagInput from '../../components/TagInput'
 import { useDecks } from '../../hooks/useData'
-import { db, makeCard } from '../../lib/db'
+import { addCards, db, makeCard } from '../../lib/db'
 import { useSettings } from '../../app/settings-context'
-import type { CardKind } from '../../lib/types'
+import type { CardInput, CardKind } from '../../lib/types'
+import BatchPanel from './BatchPanel'
+import { parseCardInputs, parseLines } from './parseCards'
 import { CARD_PROMPT } from './prompt'
 
 type Tab = 'form' | 'json' | 'lines'
@@ -41,6 +43,13 @@ export default function AddCardsPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const [jsonText, setJsonText] = useState('')
+  const [linesText, setLinesText] = useState('')
+  const [pending, setPending] = useState<CardInput[]>([])
+  const [batchDeckId, setBatchDeckId] = useState(0)
+  const [batchError, setBatchError] = useState('')
+  const [batchMessage, setBatchMessage] = useState('')
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (form.deckId || !decks.length) return
@@ -79,6 +88,40 @@ export default function AddCardsPage() {
     await navigator.clipboard.writeText(CARD_PROMPT)
     setCopied(true)
     window.setTimeout(() => setCopied(false), 2000)
+  }
+
+  function prepareCards(text: string, parser: (source: string) => CardInput[]) {
+    setBatchError('')
+    setBatchMessage('')
+    try {
+      setPending(parser(text))
+    } catch (cause) {
+      setPending([])
+      setBatchError(cause instanceof Error ? cause.message : 'Could not read those cards.')
+    }
+  }
+
+  async function saveBatch() {
+    if (!pending.length) return
+    setSaving(true)
+    setBatchError('')
+    try {
+      const inputs = pending.map((input) => ({
+        ...input,
+        deckId: batchDeckId || input.deckId,
+        source: 'import' as const,
+      }))
+      const count = await addCards(inputs)
+      setBatchMessage(`${count} ${count === 1 ? 'card' : 'cards'} saved.`)
+      setPending([])
+      if (tab === 'json') setJsonText('')
+      else setLinesText('')
+      window.setTimeout(() => setBatchMessage(''), 3500)
+    } catch (cause) {
+      setBatchError(cause instanceof Error ? cause.message : 'Could not save cards.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -208,18 +251,65 @@ export default function AddCardsPage() {
         </section>
       )}
 
+      {batchError && <div className="alert alert-error">{batchError}</div>}
+      {batchMessage && <div className="alert alert-success">{batchMessage}</div>}
+
       {tab === 'json' && (
-        <section className="card empty-state">
+        <section className="card stack">
           <h2>Paste JSON</h2>
-          <p>Generate cards with the copied prompt and paste the JSON array here to review them before saving.</p>
+          <div className="field">
+            <label className="label" htmlFor="json-input">JSON array from your AI</label>
+            <textarea
+              id="json-input"
+              className="textarea"
+              style={{ minHeight: 180, fontFamily: 'ui-monospace, monospace', fontSize: '0.78rem' }}
+              value={jsonText}
+              placeholder={'[\n  { "front": "going to → gonna", "back": "going to", "kind": "connected-speech" }\n]'}
+              onChange={(event) => setJsonText(event.target.value)}
+            />
+          </div>
+          <div className="row">
+            <button className="btn btn-primary" disabled={!jsonText.trim()} onClick={() => prepareCards(jsonText, parseCardInputs)}>
+              Review cards
+            </button>
+            <span className="hint">Accepted: a JSON array, or an object like <code>{'{ "cards": [...] }'}</code>.</span>
+          </div>
         </section>
       )}
 
       {tab === 'lines' && (
-        <section className="card empty-state">
+        <section className="card stack">
           <h2>Simple lines</h2>
-          <p>Type one card per line using <code>front | back</code> for a quick manual batch.</p>
+          <div className="field">
+            <label className="label" htmlFor="lines-input">One card per line</label>
+            <textarea
+              id="lines-input"
+              className="textarea"
+              style={{ minHeight: 160 }}
+              value={linesText}
+              placeholder={'serendipity | feeling that something good happened by chance\n going to → gonna | going to | Reduced form in fast speech'}
+              onChange={(event) => setLinesText(event.target.value)}
+            />
+          </div>
+          <div className="row">
+            <button className="btn btn-primary" disabled={!linesText.trim()} onClick={() => prepareCards(linesText, parseLines)}>
+              Review cards
+            </button>
+            <span className="hint">Use <code>front | back</code> or <code>front | back | explanation</code>.</span>
+          </div>
         </section>
+      )}
+
+      {pending.length > 0 && (
+        <BatchPanel
+          inputs={pending}
+          decks={decks}
+          deckId={batchDeckId}
+          onDeckChange={setBatchDeckId}
+          onChange={setPending}
+          onSave={saveBatch}
+          saving={saving}
+        />
       )}
     </div>
   )
