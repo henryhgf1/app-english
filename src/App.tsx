@@ -2,6 +2,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import AppShell from './app/AppShell'
 import { SettingsProvider } from './app/settings-context'
 import AddCardsPage from './features/cards/AddCardsPage'
+import CardsPage from './features/cards/CardsPage'
 import DecksPage from './features/decks/DecksPage'
 import {
   DashboardPage,
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/add" element={<AddCardsPage />} />
             <Route path="/decks" element={<DecksPage />} />
+            <Route path="/cards" element={<CardsPage />} />
             <Route path="/review" element={<ReviewPage />} />
             <Route path="/notes" element={<NotesPage />} />
             <Route path="/quiz" element={<QuizPage />} />
