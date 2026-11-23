@@ -262,6 +262,8 @@ button, input, textarea, select { font: inherit; }
 .heat-2 { background: color-mix(in srgb, var(--primary) 60%, var(--surface-3)); }
 .heat-3 { background: var(--primary); }
 
+.notes-layout { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 16px; align-items: start; }
+
 .markdown { font-size: 0.88rem; line-height: 1.7; overflow-wrap: anywhere; }
 .markdown h1, .markdown h2, .markdown h3 { margin: 18px 0 8px; font-size: 1rem; }
 .markdown p { margin: 0 0 12px; }
@@ -279,6 +281,7 @@ button, input, textarea, select { font: inherit; }
 .hide-small { display: inline; }
 
 @media (max-width: 860px) {
+  .notes-layout { grid-template-columns: 1fr; }
   .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

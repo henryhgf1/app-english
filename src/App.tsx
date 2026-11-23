@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import AppShell from './app/AppShell'
 import { SettingsProvider } from './app/settings-context'
@@ -7,28 +8,31 @@ import DecksPage from './features/decks/DecksPage'
 import ReviewPage from './features/review/ReviewPage'
 import {
   DashboardPage,
-  NotesPage,
   QuizPage,
   SettingsPage,
   StatsPage,
 } from './app/placeholders'
+
+const NotesPage = lazy(() => import('./features/notes/NotesPage'))
 
 export default function App() {
   return (
     <SettingsProvider>
       <HashRouter>
         <AppShell>
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/add" element={<AddCardsPage />} />
-            <Route path="/decks" element={<DecksPage />} />
-            <Route path="/cards" element={<CardsPage />} />
-            <Route path="/review" element={<ReviewPage />} />
-            <Route path="/notes" element={<NotesPage />} />
-            <Route path="/quiz" element={<QuizPage />} />
-            <Route path="/stats" element={<StatsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Routes>
+          <Suspense fallback={<div className="card muted">Loading...</div>}>
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/add" element={<AddCardsPage />} />
+              <Route path="/decks" element={<DecksPage />} />
+              <Route path="/cards" element={<CardsPage />} />
+              <Route path="/review" element={<ReviewPage />} />
+              <Route path="/notes" element={<NotesPage />} />
+              <Route path="/quiz" element={<QuizPage />} />
+              <Route path="/stats" element={<StatsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Routes>
+          </Suspense>
         </AppShell>
       </HashRouter>
     </SettingsProvider>
