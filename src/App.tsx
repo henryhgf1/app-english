@@ -4,11 +4,11 @@ import { SettingsProvider } from './app/settings-context'
 import AddCardsPage from './features/cards/AddCardsPage'
 import CardsPage from './features/cards/CardsPage'
 import DecksPage from './features/decks/DecksPage'
+import ReviewPage from './features/review/ReviewPage'
 import {
   DashboardPage,
   NotesPage,
   QuizPage,
-  ReviewPage,
   SettingsPage,
   StatsPage,
 } from './app/placeholders'
