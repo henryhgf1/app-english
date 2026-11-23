@@ -7,11 +7,9 @@ import CardsPage from './features/cards/CardsPage'
 import DecksPage from './features/decks/DecksPage'
 import ReviewPage from './features/review/ReviewPage'
 import QuizPage from './features/quiz/QuizPage'
-import {
-  DashboardPage,
-  SettingsPage,
-  StatsPage,
-} from './app/placeholders'
+import DashboardPage from './features/dashboard/DashboardPage'
+import StatsPage from './features/stats/StatsPage'
+import { SettingsPage } from './app/placeholders'
 
 const NotesPage = lazy(() => import('./features/notes/NotesPage'))
 
