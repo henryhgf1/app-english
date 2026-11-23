@@ -1,8 +1,8 @@
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import AppShell from './app/AppShell'
 import { SettingsProvider } from './app/settings-context'
+import AddCardsPage from './features/cards/AddCardsPage'
 import {
-  AddCardsPage,
   DashboardPage,
   DecksPage,
   NotesPage,
