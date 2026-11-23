@@ -9,7 +9,7 @@ import ReviewPage from './features/review/ReviewPage'
 import QuizPage from './features/quiz/QuizPage'
 import DashboardPage from './features/dashboard/DashboardPage'
 import StatsPage from './features/stats/StatsPage'
-import { SettingsPage } from './app/placeholders'
+import SettingsPage from './features/settings/SettingsPage'
 
 const NotesPage = lazy(() => import('./features/notes/NotesPage'))
 
